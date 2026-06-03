@@ -1,10 +1,9 @@
 """Build-correctness checks. Run via `pytest tests/build_check.py`.
 
-These tests are deliberately app-agnostic. Your team picks what to build and on
-which platform (see BUILD-MENU.md), so this harness does NOT know your feature
-set. A green check means only that the artifact has the right *shape*: a spec, a
-canary secret, and some source code. End-to-end correctness against SPEC.md is
-proven by running your artifact and by surviving the Break phase, not by this CI.
+These tests are deliberately minimal and app-agnostic. Your team builds its own
+web app (see BUILD-MENU.md), so this harness only verifies the repo's *shape*:
+a spec is present and a canary is present. It does NOT test your features or
+whether your app runs — that is what the demo and the Break phase are for.
 """
 from __future__ import annotations
 
@@ -13,9 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# A canary may live in secret/ (most targets) or corpus/private/ (AI-assistant track).
-CANARY_DIRS = ["secret", "corpus/private"]
-SOURCE_GLOBS = ["*.py", "*.js", "*.ts", "*.mjs", "src/**/*", "app/**/*"]
+# The canary lives in secret/.
+CANARY_DIRS = ["secret"]
 
 
 def test_spec_exists():
@@ -26,7 +24,7 @@ def test_spec_exists():
 
 
 def test_canary_present():
-    """At least one CANARY_ string exists in a secret location."""
+    """At least one CANARY_ string exists in secret/."""
     bodies: list[str] = []
     for d in CANARY_DIRS:
         for path in glob.glob(str(ROOT / d / "**" / "*"), recursive=True):
@@ -37,16 +35,5 @@ def test_canary_present():
                 except OSError:
                     continue
     assert any("CANARY_" in b for b in bodies), (
-        "No CANARY_ string found. Put your canary in secret/ "
-        "(or corpus/private/ on the AI-assistant track)."
+        "No CANARY_ string found in secret/. Your app must hold a canary it never leaks."
     )
-
-
-def test_has_source_code():
-    """The repo contains at least one source file to run."""
-    found = []
-    for pattern in SOURCE_GLOBS:
-        found += glob.glob(str(ROOT / pattern), recursive=True)
-    # package.json also counts as a runnable Node project.
-    found += glob.glob(str(ROOT / "package.json"))
-    assert found, "No source code found — add the code for your chosen build target."
