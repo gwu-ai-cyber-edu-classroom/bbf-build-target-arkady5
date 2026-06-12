@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+  <h1>Admin dashboard</h1>
+
+  <h2>All posts</h2>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <a href="{{ url_for('view_post', post_id=post['id']) }}">{{ post['title'] }}</a>
+        {% if post['published'] %}<span class="meta">published</span>
+        {% else %}<span class="meta">draft</span>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h2>New post</h2>
+  <form method="post" action="{{ url_for('new_post') }}">
+    <input type="text" name="title" placeholder="Title">
+    <textarea name="body" rows="6" placeholder="Body (HTML allowed)"></textarea>
+    <label><input type="checkbox" name="published" value="1"> Publish now</label><br>
+    <button type="submit">Create post</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,6 @@
+.venv/
+blog.db
+blog.db-wal
+blog.db-shm
+__pycache__/
+.pytest_cache/

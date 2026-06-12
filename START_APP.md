@@ -6,32 +6,38 @@
 
 ## What this app is
 
-- **App:** <one line — e.g., "a paste-bin service" (menu #1)>
-- **Stack:** <Python + Flask / FastAPI, or Node + Express>
+- **App:** a blog + comments board (menu #4) — read posts, leave comments, admin writes posts/drafts.
+- **Stack:** Python + Flask + SQLite (file-based, `blog.db`, created on first run).
 
 ## Start it
 
 ```bash
 # 1. Install dependencies
-<e.g. pip install -r requirements.txt   OR   npm install>
+pip install -r requirements.txt
 
 # 2. Run it
-<e.g. flask --app app run --port 8000   OR   uvicorn app:app --port 8000   OR   node server.js>
+flask --app app run --port 8000
 ```
 
-- **Base URL:** <e.g. http://localhost:8000>
+- **Base URL:** http://localhost:8000
 - **Stop it:** Ctrl-C in the terminal running it.
 
 ## How to interact with it
 
 - **Main endpoints / pages:**
-  - `<METHOD> <path>` — <what it does> — <example>
-  - `<METHOD> <path>` — <what it does> — <example>
-- **Accounts / credentials for legitimate use** (if the app has login): <demo username/password, or "none">
+  - `GET /` — home page listing published posts.
+  - `GET /post/<id>` — view a single post and its comments — e.g. `http://localhost:8000/post/1`
+  - `POST /post/<id>/comment` — add a comment (form fields `author`, `body`).
+  - `GET /login`, `POST /login` — admin login (form fields `username`, `password`).
+  - `GET /admin` — admin dashboard (create posts, see drafts); requires login.
+  - `POST /admin/new` — create a post (form fields `title`, `body`, optional `published`).
+  - `GET /logout` — end the admin session.
+- **Accounts / credentials for legitimate use:** none needed to read posts or comment. The admin
+  login is private to the build team (breakers are not given it).
 - **A benign request that should succeed:**
 
   ```bash
-  <e.g. curl http://localhost:8000/notes/1>
+  curl http://localhost:8000/post/1
   ```
 
 ## For breakers

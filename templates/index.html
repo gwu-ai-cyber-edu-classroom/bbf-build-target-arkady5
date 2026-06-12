@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Blog Board</h1>
+  <ul>
+    {% for post in posts %}
+      <li><a href="{{ url_for('view_post', post_id=post['id']) }}">{{ post['title'] }}</a></li>
+    {% else %}
+      <li>No posts yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

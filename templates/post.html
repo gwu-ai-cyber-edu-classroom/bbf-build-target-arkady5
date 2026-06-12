@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ post['title'] }}{% endblock %}
+{% block content %}
+  <h1>{{ post['title'] }}</h1>
+  {% if not post['published'] %}<p class="meta">(draft)</p>{% endif %}
+  <div class="post-body">{{ post['body'] | safe }}</div>
+
+  <h2>Comments</h2>
+  {% for c in comments %}
+    <div class="comment">
+      <div class="meta">{{ c['author'] }}</div>
+      <div>{{ c['body'] | safe }}</div>
+    </div>
+  {% else %}
+    <p>No comments yet. Be the first!</p>
+  {% endfor %}
+
+  <h3>Add a comment</h3>
+  <form method="post" action="{{ url_for('add_comment', post_id=post['id']) }}">
+    <input type="text" name="author" placeholder="Your name">
+    <textarea name="body" rows="3" placeholder="Say something..."></textarea>
+    <button type="submit">Post comment</button>
+  </form>
+{% endblock %}
